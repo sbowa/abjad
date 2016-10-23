@@ -3,7 +3,7 @@ from abjad.tools.abctools.AbjadValueObject import AbjadValueObject
 
 
 class SetClass(AbjadValueObject):
-    r'''Forte number.
+    r'''Set class.
 
     ..  container:: example
 
