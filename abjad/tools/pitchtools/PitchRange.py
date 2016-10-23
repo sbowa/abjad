@@ -493,8 +493,7 @@ class PitchRange(AbjadValueObject):
         interval = pitchtools.NumberedInterval(-12)
         while True:
             pitch_carrier_copy = copy.copy(pitch_carrier)
-            candidate = pitchtools.transpose_pitch_carrier_by_interval(
-                pitch_carrier_copy, interval)
+            candidate = interval.transpose(pitch_carrier_copy)
             if candidate in self:
                 result.append(candidate)
                 interval -= pitchtools.NumberedInterval(12)
@@ -504,8 +503,7 @@ class PitchRange(AbjadValueObject):
         interval = pitchtools.NumberedInterval(0)
         while True:
             pitch_carrier_copy = copy.copy(pitch_carrier)
-            candidate = pitchtools.transpose_pitch_carrier_by_interval(
-                pitch_carrier_copy, interval)
+            candidate = interval.transpose(pitch_carrier_copy)
             if candidate in self:
                 result.append(candidate)
                 interval += pitchtools.NumberedInterval(12)
