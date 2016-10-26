@@ -411,6 +411,16 @@ class SetClass(AbjadValueObject):
         (12, 1): (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11),
         }
 
+    _prime_form_to_forte_identifier = {
+        v: k for k, v in
+        _forte_identifier_to_prime_form.items()
+        }
+
+    _prime_form_to_lex_identifier = {
+        v: k for k, v in
+        _lex_identifier_to_prime_form.items()
+        }
+
     ### INITIALIZER ###
 
     def __init__(self, cardinality=1, rank=1, lex_rank=None):
@@ -631,3 +641,84 @@ class SetClass(AbjadValueObject):
         Returns positive integer.
         '''
         return self._rank
+
+    ### PUBLIC METHODS ###
+
+    @staticmethod
+    def from_pitch_class_set(pitch_class_set, lex_rank=None):
+        r'''Makes set class from `pitch_class_set`.
+
+        ..  container:: example
+
+            **Example 1.** Makes set class from pitch-class set:
+
+            ::
+
+                >>> pc_set = pitchtools.PitchClassSet([9, 0, 3, 5, 6])
+                >>> set_class = pitchtools.SetClass.from_pitch_class_set(pc_set)
+                >>> print(set_class)
+                SC(5-31){0, 1, 3, 6, 9}
+
+            ::
+
+                >>> pc_set = pitchtools.PitchClassSet([9, 0, 3, 5, 6])
+                >>> set_class = pitchtools.SetClass.from_pitch_class_set(pc_set, lex_rank=True)
+                >>> print(set_class)
+                SC(5-22){0, 1, 3, 6, 9}
+
+        ..  container:: example
+
+            **Example 2.** Makes set class from pitch-class set:
+
+            ::
+
+                >>> pc_set = pitchtools.PitchClassSet([9, 11, 1, 2, 4, 6])
+                >>> set_class = pitchtools.SetClass.from_pitch_class_set(pc_set)
+                >>> print(set_class)
+                SC(6-32){0, 2, 4, 5, 7, 9}
+
+            ::
+
+                >>> pc_set = pitchtools.PitchClassSet([9, 11, 1, 2, 4, 6])
+                >>> set_class = pitchtools.SetClass.from_pitch_class_set(pc_set, lex_rank=True)
+                >>> print(set_class)
+                SC(6-49){0, 2, 4, 5, 7, 9}
+
+        ..  container:: example
+
+            **Example 3.** Makes set class from pitch-class set:
+
+            ::
+
+                >>> pc_set = pitchtools.PitchClassSet([11, 0, 5, 6])
+                >>> set_class = pitchtools.SetClass.from_pitch_class_set(pc_set)
+                >>> print(set_class)
+                SC(4-9){0, 1, 6, 7}
+
+            ::
+
+                >>> pc_set = pitchtools.PitchClassSet([11, 0, 5, 6])
+                >>> set_class = pitchtools.SetClass.from_pitch_class_set(pc_set, lex_rank=True)
+                >>> print(set_class)
+                SC(4-17){0, 1, 6, 7}
+
+        Returns set class.
+        '''
+        from abjad.tools import pitchtools
+        pitch_class_set = pitchtools.PitchClassSet(
+            items=pitch_class_set,
+            item_class=pitchtools.NumberedPitchClass,
+            )
+        prime_form = pitch_class_set.get_prime_form()
+        prime_form = tuple([_.pitch_class_number for _ in sorted(prime_form)])
+        if lex_rank:
+            pair = SetClass._prime_form_to_lex_identifier[prime_form]
+        else:
+            pair = SetClass._prime_form_to_forte_identifier[prime_form]
+        cardinality, rank = pair
+        set_class = SetClass(
+            cardinality=cardinality,
+            rank=rank,
+            lex_rank=lex_rank,
+            )
+        return set_class
