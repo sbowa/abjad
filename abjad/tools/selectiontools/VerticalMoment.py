@@ -332,7 +332,7 @@ class VerticalMoment(Selection):
         '''
         result = []
         for component in self.components:
-            if component.start < self.offset:
+            if component._get_timespan().start_offset < self.offset:
                 result.append(component)
         result = tuple(result)
         return result
